@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/product.dart';
+import '../providers/cart_provider.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final Product product;
@@ -11,6 +13,14 @@ class ProductDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(product.name),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {
+              Navigator.pushNamed(context, '/cart');
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -78,12 +88,26 @@ class ProductDetailScreen extends StatelessWidget {
         ),
         child: ElevatedButton(
           onPressed: () {
+            // Thêm vào giỏ hàng thông qua Provider
+            Provider.of<CartProvider>(context, listen: false).addItem(product);
+            
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Đã thêm ${product.name} vào giỏ hàng')),
+              SnackBar(
+                content: Text('Đã thêm ${product.name} vào giỏ hàng'),
+                duration: const Duration(seconds: 2),
+                action: SnackBarAction(
+                  label: 'HOÀN TÁC',
+                  onPressed: () {
+                    Provider.of<CartProvider>(context, listen: false).removeSingleItem(product.id);
+                  },
+                ),
+              ),
             );
           },
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 15),
+            backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),

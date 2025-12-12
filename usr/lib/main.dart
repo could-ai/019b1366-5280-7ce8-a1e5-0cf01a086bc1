@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/cart_screen.dart';
+import 'providers/cart_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,23 +13,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Shop Quần Áo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-        appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
+    return ChangeNotifierProvider(
+      create: (ctx) => CartProvider(),
+      child: MaterialApp(
+        title: 'Shop Quần Áo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          useMaterial3: true,
+          appBarTheme: const AppBarTheme(
+            centerTitle: true,
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+          ),
         ),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const HomeScreen(),
+          '/cart': (context) => const CartScreen(),
+        },
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const HomeScreen(),
-        '/cart': (context) => const CartScreen(),
-      },
     );
   }
 }
